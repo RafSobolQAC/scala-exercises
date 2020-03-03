@@ -15,6 +15,14 @@ object Main extends App {
     max
   }
 
+  def getAll(ltrs: String): Unit = {
+    val source = Source.fromFile("/home/qa-admin/enable1.txt")
+    source.getLines().foreach(el =>
+      if (Set(el.toSeq.sorted.unwrap.toCharArray(): _*) == Set(ltrs.toSeq.sorted.unwrap.toCharArray(): _*)) {
+        println(el)
+      }
+    )
+  }
 
   def getThings(): Unit = {
     println("How many things?")
@@ -23,7 +31,7 @@ object Main extends App {
       println("Input letters: ")
       val line = scala.io.StdIn.readLine()
       println(getMax(line))
-
+      getAll(line)
     }
   }
 
