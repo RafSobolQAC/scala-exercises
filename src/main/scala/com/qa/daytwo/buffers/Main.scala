@@ -41,5 +41,7 @@ object Main {
     println(setMutable)
     val setTester = Set(1,2,3,4,5,6,7,8,9)
     println(setTester)
+
+    for (i <- 1 to 1000000) print(i+",")
   }
 }
