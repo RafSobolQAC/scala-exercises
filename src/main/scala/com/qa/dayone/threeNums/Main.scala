@@ -3,6 +3,8 @@ package com.qa.dayone.threeNums
 object Main extends App {
   def addMultiplier(int1: Int, int2: Int, int3: Int) : Int = {
 
+
+
     var max = int1;
 
     for (i <- List(int2,int3)) {
@@ -21,6 +23,13 @@ object Main extends App {
   }
   println(addMultiplier(2,7,4))
   println(addMultiplier(1,7,7))
+
+  def addList(a: Int, b: Int, c: Int): Int = {
+    val nums = List(a,b,c).sorted
+    nums(2)*(nums.head+nums(1))
+  }
+
+  println(addList(2,7,4))
 
   def bottlesOfBeer(bottles: Int): Unit = {
     for (i <- bottles to 1 by -1) {
