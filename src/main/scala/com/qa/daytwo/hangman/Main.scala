@@ -86,15 +86,39 @@ object Main extends App {
     if (wrongs.size == 5) false else true
 
   }
-  def getWord(): String = {
+  def getWord(diff: Int): String = {
     val source = Source.fromFile("/home/qa-admin/enable1.txt")
     val random = scala.util.Random
-    val lines = source.getLines().toList
-    val word = lines((random.nextFloat()*lines.size).toInt)
+    var lines = source.getLines().toList
+    val word = diff match {
+      case 1 => {
+        lines = lines.filter(el => el.length >= 10)
+        lines((random.nextFloat() * lines.size).toInt)
+      }
+      case 2 =>  {
+        lines = lines.filter(el => el.length >= 6 && el.length < 10)
+        lines((random.nextFloat () * lines.size).toInt)
+      }
+      case 3 => {
+        lines = lines.filter(el => el.length < 6)
+        lines((random.nextFloat () * lines.size).toInt)
+      }
+
+    }
     word
 
   }
-
+  def pickDifficulty(): Int = {
+    println("(E)asy, (m)edium or (h)ard?")
+    val input = scala.io.StdIn.readChar()
+    val diff = input.toLower match {
+      case 'e' => 1
+      case 'm' => 2
+      case 'h' => 3
+      case _ => 1
+    }
+    diff
+  }
   def playAgain : Boolean = {
     println("Play again? (y/n)")
     val yesNo = scala.io.StdIn.readChar()
@@ -102,7 +126,7 @@ object Main extends App {
   }
   def play(): Unit = {
     do {
-      val goal = getWord()
+      val goal = getWord(pickDifficulty())
       val won = runGame(goal)
       if (won) {
         println()
