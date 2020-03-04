@@ -23,19 +23,20 @@ object Main extends App {
     }
 
   }
+
   def hangmanSetup(hangman: scala.collection.mutable.ListBuffer[String], wrongs: scala.collection.mutable.HashSet[Char]) = {
-    val leg1= " |"
-    val leg2 = " |   |"
-    val base = "_______"
-    val stan = "   |"
+    val leg1 = " |"
+    val leg2 = " |      |"
+    val base = "__________"
+    val stan = "    |"
     val topy = " ____________"
-    val rope = "   |    |"
-    val head = "   |    o"
-    val body = "   |    |"
-    val arml = "   |   /|"
-    val arms = "   |   /|\\"
-    val legl = "   |   /"
-    val dead = "   |   / \\"
+    val rope = "    |     |"
+    val head = "    |     o"
+    val body = "    |     |"
+    val arml = "    |    /|"
+    val arms = "    |    /|\\"
+    val legl = "    |    /"
+    val dead = "    |    / \\"
     wrongs.size match {
       case 1 => hangman += leg1
       case 2 => hangman(0) = leg2
@@ -53,12 +54,14 @@ object Main extends App {
     }
     hangman
   }
+
   def printHangman(hangman: scala.collection.mutable.ListBuffer[String]): Unit = {
     if (hangman.length < 9) {
       for (i <- 1 to (9 - hangman.length)) println()
     }
     hangman.foreach(println)
   }
+
   def wrongGuess(c: Char, wrongs: scala.collection.mutable.HashSet[Char]) = {
     wrongs.add(c)
     println(wrongs.size + " wrongs so far! " + (5 - wrongs.size) + " to go!")
@@ -103,7 +106,7 @@ object Main extends App {
     view.foreach(el => print(el + " "))
 
     do {
-      for (i <- 1 to 3) println()
+      for (_ <- 1 to 3) println()
       var break = true
       while (break) {
         c = askToGuess()
@@ -134,18 +137,15 @@ object Main extends App {
     val random = scala.util.Random
     var lines = source.getLines().toList
     val word = diff match {
-      case 1 => {
+      case 1 =>
         lines = lines.filter(el => el.length >= 10)
         lines((random.nextFloat() * lines.size).toInt)
-      }
-      case 2 => {
+      case 2 =>
         lines = lines.filter(el => el.length >= 6 && el.length < 10)
         lines((random.nextFloat() * lines.size).toInt)
-      }
-      case 3 => {
+      case 3 =>
         lines = lines.filter(el => el.length < 6)
         lines((random.nextFloat() * lines.size).toInt)
-      }
 
     }
     word
