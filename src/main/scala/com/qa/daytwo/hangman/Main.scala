@@ -159,7 +159,6 @@ object Main extends App {
     println("(E)asy, (m)edium or (h)ard?")
     val input = scala.io.StdIn.readChar()
     val diff = input.toLower match {
-      case 'e' => 1
       case 'm' => 2
       case 'h' => 3
       case _ => 1
@@ -177,20 +176,17 @@ object Main extends App {
   def play(): Unit = {
     do {
       val goal = getWord(pickDifficulty())
-      val won = runGame(goal)
-      if (won) {
+      if (runGame(goal)) {
         println()
         println("You won!")
         println("Well done!")
-
-      }
-      else {
+      } else {
         println()
         println("You died!")
         println("The word was " + goal)
       }
 
-      for (i <- 1 to 30) print("-")
+      for (_ <- 1 to 30) print("-")
       println()
     } while (playAgain)
   }
