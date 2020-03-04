@@ -22,9 +22,9 @@ class Player(val grid: Grid) {
     var hit = true
     while (hit) {
       println("What index X to shoot? ")
-      val indexX = readInt()
+      val indexX = Utils.getInputInBounds(grid.length)
       println("What index Y to shoot? ")
-      val indexY = readInt()
+      val indexY = Utils.getInputInBounds(grid.length)
       hit = takeShot(indexX, indexY)
       if (hit) {
         println("That's a hit!")

@@ -1,5 +1,7 @@
 package com.qa.daythree.battleships
 
+import java.lang
+
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.ListBuffer
 import scala.io.StdIn._
@@ -125,37 +127,27 @@ class Grid(val length: Int) {
     }
 
   }
-
+  def getCorrectIndex(axis: String): Int = {
+    var ret = -1
+    while (ret < 0 || ret > length-1) {
+      println(s"What index ${axis}? (0-${length - 1}): ")
+      ret = Utils.getInputInBounds(length)
+//      if (ret < 0 || ret > length-1) {
+//        println(s"Please use a number in the range of (0-${length-1}).")
+//        ret = -1
+//      }
+    }
+    ret
+  }
   def askToPlaceShip(ship: Ship): Unit = {
     var managedToPlace = false
     do {
-      println("What index X? ")
-      val indexX = readInt()
+      val indexX = getCorrectIndex("x")
 
 
-      println("What index Y? ")
-      val indexY = readInt()
+      val indexY = getCorrectIndex("y")
 
       println(getPossibleDirections(indexX, indexY, ship))
-
-
-//      var wrongInput = true
-//      var horVer = true
-//      while (wrongInput) {
-//        println("(h)orizontal or (v)ertical? ")
-//        horVer = readLine().charAt(0).toLower match {
-//          case 'h' =>
-//            wrongInput = false
-//            true
-//          case 'v' => false
-//            wrongInput = false
-//            false
-//          case _ =>
-//            wrongInput = true
-//            true
-//
-//        }
-//      }
 
       managedToPlace = tryToPlaceShip(indexX, indexY, ship, getDirectionToGo(getPossibleDirections(indexX, indexY, ship)))
     } while (!managedToPlace)
