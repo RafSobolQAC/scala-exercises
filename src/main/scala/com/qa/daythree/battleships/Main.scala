@@ -10,7 +10,8 @@ object Main {
 
     println("Player 2's turn!")
     ShipsLibrary.listShips.foreach(el => grid2.askToPlaceShip(el))
-    for (_ <- 1 to 70) println()
+    for (_ <- 1 to 70
+      0) println()
 
     val player1 = new Player(grid2)
     val player2 = new Player(grid1)

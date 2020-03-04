@@ -8,6 +8,7 @@ import scala.io.StdIn._
 
 class Grid(val length: Int) {
   var grid: ArrayBuffer[ArrayBuffer[String]] = ArrayBuffer.fill(length, length)("*")
+  var shipsOnBoard = new ListBuffer[(Ship, Int, Int, Int, Int)]
 
   def outputGrid(): ArrayBuffer[ArrayBuffer[String]] = {
     grid.reverse
@@ -26,7 +27,7 @@ class Grid(val length: Int) {
       index -= 1
       el.foreach(elem => {
         if (elem == "X") {
-          if (visible == true) print(elem + "  ")
+          if (visible) print(elem + "  ")
           else print("*  ")
         }
         else print(elem + "  ")
@@ -42,6 +43,10 @@ class Grid(val length: Int) {
   }
 
   def placeShip(indexX: Int, indexY: Int, ship: Ship, direction: Char): Unit = direction match {
+    //    case 'u' => (0 until ship.length).toList.foreach(el => setShip(indexX, indexY + el))
+    //    case 'r' => (0 until ship.length).toList.foreach(el => setShip(indexX + el, indexY))
+    //    case 'd' => (0 until ship.length).toList.foreach(el => setShip(indexX, indexY - el))
+    //    case 'l' => (0 until ship.length).toList.foreach(el => setShip(indexX - el, indexY))
     case 'u' => (0 until ship.length).toList.foreach(el => setShip(indexX, indexY + el))
     case 'r' => (0 until ship.length).toList.foreach(el => setShip(indexX + el, indexY))
     case 'd' => (0 until ship.length).toList.foreach(el => setShip(indexX, indexY - el))
@@ -49,13 +54,13 @@ class Grid(val length: Int) {
     case _ => println("Whoops! This is a bug! placeShip got something that isn't up, right, down or left.")
   }
 
-  def placeShip(indexX: Int, indexY: Int, ship: Ship, horizontal: Boolean = true): Unit = {
-    if (horizontal) {
-      (0 until ship.length).toList.foreach(el => setShip(indexX + el, indexY))
-    } else {
-      (0 until ship.length).toList.foreach(el => setShip(indexX, indexY + el))
-    }
-  }
+  //  def placeShip(indexX: Int, indexY: Int, ship: Ship, horizontal: Boolean = true): Unit = {
+  //    if (horizontal) {
+  //      (0 until ship.length).toList.foreach(el => setShip(indexX + el, indexY))
+  //    } else {
+  //      (0 until ship.length).toList.foreach(el => setShip(indexX, indexY + el))
+  //    }
+  //  }
 
   def isDirectionPossible(indexX: Int, indexY: Int, direction: Char, ship: Ship): Boolean = direction match {
     case 'u' => if (length - 1 - ship.length - indexY >= 0) true else false
@@ -122,9 +127,54 @@ class Grid(val length: Int) {
 
   }
 
+  //ship, startX, startY, endX, endY
+
+  def addShipToDictionary(indexX: Int, indexY: Int, ship: Ship, direction: Char): (Ship, Int, Int, Int, Int) = {
+    var endX = -1
+    var endY = -1
+    direction match {
+      case 'u' => endY = endY + ship.length
+      case 'r' => endX = endX + ship.length
+      case 'd' => endY = endY - ship.length
+      case 'l' => endX = endX - ship.length
+    }
+
+    if (endX == -1) endX = indexX
+    else if (endY == -1) endY = indexY
+
+    (ship, indexX, indexY, endX, endY)
+  }
+
+  def checkIfShipsSunk(): Unit = {
+    shipsOnBoard.foreach {
+      case (ship: Ship, xSt: Int, ySt: Int, xEn: Int, yEn: Int) => {
+        var wasSunk = true
+        if (xSt == xEn) {
+          (ySt to yEn).toList.foreach(yCurrent => {
+            println(yCurrent)
+            if (grid(yCurrent)(xSt) == "X") wasSunk = false
+          })
+          if (wasSunk) {
+            (ySt to yEn).toList.foreach(yCurrent => grid(yCurrent)(xSt) = "S")
+          }
+        }
+        else {
+          (xSt to xEn).toList.foreach(xCurrent => if (grid(xCurrent)(ySt) == "X") wasSunk = false)
+          if (wasSunk) {
+            (xSt to xEn).toList.foreach(xCurrent => grid(xCurrent)(ySt) = "S")
+
+          }
+
+        }
+      }
+
+    }
+  }
+
   def tryToPlaceShip(indexX: Int, indexY: Int, ship: Ship, direction: Char): Boolean = {
     if (checkCollisions(indexX, indexY, ship, direction)) {
       placeShip(indexX, indexY, ship, direction)
+      shipsOnBoard += addShipToDictionary(indexX, indexY, ship, direction)
       true
     }
     else {

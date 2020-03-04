@@ -23,11 +23,14 @@ class Player(val grid: Grid) {
     while (hit) {
       println("What index X to shoot? ")
       val indexX = Utils.getInputInBounds(grid.length)
+      println()
       println("What index Y to shoot? ")
       val indexY = Utils.getInputInBounds(grid.length)
+      println()
       hit = takeShot(indexX, indexY)
       if (hit) {
         println("That's a hit!")
+        grid.checkIfShipsSunk()
         grid.printGrid(false)
         hit = !grid.checkIfLost()
       }
