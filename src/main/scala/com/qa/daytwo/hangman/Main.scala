@@ -60,11 +60,12 @@ object Main extends App {
       for (i <- 1 to (9 - hangman.length)) println()
     }
     hangman.foreach(println)
+    println()
   }
 
   def wrongGuess(c: Char, wrongs: scala.collection.mutable.HashSet[Char]) = {
     wrongs.add(c)
-    println(wrongs.size + " wrongs so far! " + (5 - wrongs.size) + " to go!")
+    println(wrongs.size + " wrongs so far! " + (12 - wrongs.size) + " to go!")
     wrongs
   }
 
@@ -91,6 +92,8 @@ object Main extends App {
       val test = scala.io.StdIn.readLine()
       if (!test.isEmpty && test.length == 1) c = test.charAt(0)
     }
+    for (_ <- 1 to 20) println()
+
     c.toLower
   }
 
@@ -148,7 +151,7 @@ object Main extends App {
         lines((random.nextFloat() * lines.size).toInt)
 
     }
-    word
+    word.toLowerCase().filter(el => el.isLetter)
 
   }
 
