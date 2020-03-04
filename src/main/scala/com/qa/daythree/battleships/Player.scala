@@ -28,7 +28,7 @@ class Player(val grid: Grid) {
       hit = takeShot(indexX, indexY)
       if (hit) {
         println("That's a hit!")
-        grid.printGrid()
+        grid.printGrid(false)
         hit = !grid.checkIfLost()
       }
 
@@ -36,7 +36,7 @@ class Player(val grid: Grid) {
 
     println("You missed!")
 
-    grid.printGrid()
+    grid.printGrid(false)
 
 
   }

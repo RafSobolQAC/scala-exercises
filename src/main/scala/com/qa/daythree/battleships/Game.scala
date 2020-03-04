@@ -16,7 +16,7 @@ class Game(val player1: Player, val player2: Player) {
     while(!xWon) {
       (1 to 10).toList.foreach(println)
       println("Player 1's turn!")
-      player1.grid.printGrid()
+      player1.grid.printGrid(false)
       xWon = playTurn(player1)
 
       if (xWon) println("Player 1 wins!")
@@ -24,7 +24,7 @@ class Game(val player1: Player, val player2: Player) {
       else {
         (1 to 10).toList.foreach(println)
         println("Player 2's turn!")
-        player2.grid.printGrid()
+        player2.grid.printGrid(false)
         xWon = playTurn(player2)
         if (xWon) println("Player 2 wins!")
       }

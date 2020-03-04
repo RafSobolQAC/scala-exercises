@@ -13,7 +13,7 @@ class Grid(val length: Int) {
     grid.reverse
   }
 
-  def printGrid(): Unit = {
+  def printGrid(visible: Boolean = true): Unit = {
     var index = 11
     print("   ")
     (0 to 11).toList.foreach(el =>
@@ -25,12 +25,17 @@ class Grid(val length: Int) {
       else print(index + " ")
       index -= 1
       el.foreach(elem => {
-        print(elem + "  ")
+        if (elem == "X") {
+          if (visible == true) print(elem + "  ")
+          else print("*  ")
+        }
+        else print(elem + "  ")
+
       })
       println()
-
     })
   }
+
 
   def setShip(indexX: Int, indexY: Int): Unit = {
     grid(indexY)(indexX) = "X"
@@ -109,9 +114,10 @@ class Grid(val length: Int) {
           if (grid(indexY)(indexX - el) == "X") noShipsColliding = false
         )
       case _ => println("This is a bug! checkCollisions got an incorrect direction. ")
-        println("The direction given was: "+direction)
+        println("The direction given was: " + direction)
 
     }
+
     noShipsColliding
 
   }
@@ -127,21 +133,24 @@ class Grid(val length: Int) {
     }
 
   }
+
   def getCorrectIndex(axis: String): Int = {
     var ret = -1
-    while (ret < 0 || ret > length-1) {
+    while (ret < 0 || ret > length - 1) {
       println(s"What index ${axis}? (0-${length - 1}): ")
       ret = Utils.getInputInBounds(length)
-//      if (ret < 0 || ret > length-1) {
-//        println(s"Please use a number in the range of (0-${length-1}).")
-//        ret = -1
-//      }
+      //      if (ret < 0 || ret > length-1) {
+      //        println(s"Please use a number in the range of (0-${length-1}).")
+      //        ret = -1
+      //      }
     }
     ret
   }
+
   def askToPlaceShip(ship: Ship): Unit = {
     var managedToPlace = false
     do {
+      println(s"Ship length: ${ship.length}")
       val indexX = getCorrectIndex("x")
 
 
@@ -151,6 +160,8 @@ class Grid(val length: Int) {
 
       managedToPlace = tryToPlaceShip(indexX, indexY, ship, getDirectionToGo(getPossibleDirections(indexX, indexY, ship)))
     } while (!managedToPlace)
+    println()
+    printGrid()
 
   }
 
