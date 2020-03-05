@@ -52,79 +52,79 @@ object Main extends App {
     else concatStrings(toAdd, previous.append(morseNoSpaces(convertCharToMorse(toAdd.charAt(index)))), index + 1)
   }
 
-  //  def readFile(): List[String] = {
-  //    val fileSource = Source.fromFile("/home/qa-admin/enable1.txt")
-  //    val fileRead = fileSource.getLines
-  //    //    fileSource.close()
-  //    fileRead.toList
-  //  }
-  //
-  //  def makeMapOfWordToEncodingFromFile(): Map[String, String] = {
-  //    val mapOfWordsToEncodings = new mutable.HashMap[String, String]
-  //    readFile().foreach(el => mapOfWordsToEncodings(el) = morseEncoder(el))
-  //    mapOfWordsToEncodings.toMap
-  //  }
-  //
-  //  def makeMapOfEncodingsToCountsFromFile() = {
-  //    val mapOfThings: mutable.HashMap[String, Int] = new mutable.HashMap[String, Int]
-  //    readFile().foreach(el => mapOfThings(morseEncoder(el)) = mapOfThings.getOrElse(morseEncoder(el), 0) + 1)
-  //    mapOfThings
-  //  }
-  //
-  //  def findMaxCountOfEncodingsInMap(map: mutable.HashMap[String, Int]): Int = {
-  //    map.values.toList.reduce((a, b) => if (a > b) a else b)
-  //  }
-  //
-  //  def getEncodingWithMaxCounts(maxCount: Int, wordEncodings: mutable.HashMap[String, Int]) = {
-  //    println("Counts: " + maxCount)
-  //    wordEncodings.filter(el => el._2 == maxCount).keys
-  //  }
-  //
-  //  def getWordsWithGivenEncoding(morse: Iterable[String], wordsToEncodings: Map[String, String]) = {
-  //    val listOfStrings = new ListBuffer[String]
-  //    morse.foreach(el => wordsToEncodings.filter(elem => elem._2 == el).foreach(el => listOfStrings += el._1))
-  //    listOfStrings
-  //  }
-  //
-  //  def getWordsWithNHyphens(amount: Int, wordsToEncodings: Map[String, String]) = {
-  //    val listOfStrings = new ListBuffer[String]
-  //    wordsToEncodings.filter(elem => elem._2.matches(s".*-{$amount}.*")).foreach(el => listOfStrings += el._1)
-  //    listOfStrings
-  //  }
-  //
-  //  def countCharInString(string: String, char: Char): Int = {
-  //    string.toCharArray.count(el => el == char)
-  //  }
-  //
-  //
-  //  def getPerfectlyBalanced(wordLength: Int, wordsToEncodings: Map[String, String]) = {
-  //    val listOfStrings = new ListBuffer[String]
-  //    wordsToEncodings.filter(thing => thing._1.length == wordLength).filter(elem => countCharInString(elem._2, '-') == countCharInString(elem._2, '.')).foreach(el => listOfStrings += el._1)
-  //    listOfStrings
-  //  }
-  //
-  //  def checkIfPalindrome(string: String): Boolean = {
-  //    (0 to string.length / 2).toList.map(el => string.charAt(el)).equals((0 to string.length / 2).toList.map(el => string.charAt(string.length - 1 - el)))
-  //  }
-  //
-  //  def getIfPalindrome(string: String): Option[String] = {
-  //    Some(string).filter(checkIfPalindrome)
-  //  }
-  //
-  //  def findPalindromesOfLength(length: Int, wordsToEncodings: Map[String, String]) = {
-  //    val listOfStrings = new ListBuffer[String]
-  //    wordsToEncodings.filter(thing => thing._1.length == length).filter(el => checkIfPalindrome(el._2)).foreach(el => listOfStrings += el._1)
-  //    listOfStrings
-  //  }
-  //
-  //
-  //  println(getWordsWithGivenEncoding(getEncodingWithMaxCounts(findMaxCountOfEncodingsInMap(makeMapOfEncodingsToCountsFromFile()), makeMapOfEncodingsToCountsFromFile()), makeMapOfWordToEncodingFromFile()))
-  //  println(getWordsWithNHyphens(15, makeMapOfWordToEncodingFromFile()))
-  //  println(morseEncoder("daily"))
-  //  println(getPerfectlyBalanced(21, makeMapOfWordToEncodingFromFile()))
-  //
-  //  //  println(checkIfPalindrome("kayak"))
-  //  println(findPalindromesOfLength(13, makeMapOfWordToEncodingFromFile()))
+    def readFile(): List[String] = {
+      val fileSource = Source.fromFile("/home/qa-admin/enable1.txt")
+      val fileRead = fileSource.getLines
+      //    fileSource.close()
+      fileRead.toList
+    }
+
+    def makeMapOfWordToEncodingFromFile(): Map[String, String] = {
+      val mapOfWordsToEncodings = new mutable.HashMap[String, String]
+      readFile().foreach(el => mapOfWordsToEncodings(el) = morseEncoder(el))
+      mapOfWordsToEncodings.toMap
+    }
+
+    def makeMapOfEncodingsToCountsFromFile() = {
+      val mapOfThings: mutable.HashMap[String, Int] = new mutable.HashMap[String, Int]
+      readFile().foreach(el => mapOfThings(morseEncoder(el)) = mapOfThings.getOrElse(morseEncoder(el), 0) + 1)
+      mapOfThings
+    }
+
+    def findMaxCountOfEncodingsInMap(map: mutable.HashMap[String, Int]): Int = {
+      map.values.toList.reduce((a, b) => if (a > b) a else b)
+    }
+
+    def getEncodingWithMaxCounts(maxCount: Int, wordEncodings: mutable.HashMap[String, Int]) = {
+      println("Counts: " + maxCount)
+      wordEncodings.filter(el => el._2 == maxCount).keys
+    }
+
+    def getWordsWithGivenEncoding(morse: Iterable[String], wordsToEncodings: Map[String, String]) = {
+      val listOfStrings = new ListBuffer[String]
+      morse.foreach(el => wordsToEncodings.filter(elem => elem._2 == el).foreach(el => listOfStrings += el._1))
+      listOfStrings
+    }
+
+    def getWordsWithNHyphens(amount: Int, wordsToEncodings: Map[String, String]) = {
+      val listOfStrings = new ListBuffer[String]
+      wordsToEncodings.filter(elem => elem._2.matches(s".*-{$amount}.*")).foreach(el => listOfStrings += el._1)
+      listOfStrings
+    }
+
+    def countCharInString(string: String, char: Char): Int = {
+      string.toCharArray.count(el => el == char)
+    }
+
+
+    def getPerfectlyBalanced(wordLength: Int, wordsToEncodings: Map[String, String]) = {
+      val listOfStrings = new ListBuffer[String]
+      wordsToEncodings.filter(thing => thing._1.length == wordLength).filter(elem => countCharInString(elem._2, '-') == countCharInString(elem._2, '.')).foreach(el => listOfStrings += el._1)
+      listOfStrings
+    }
+
+    def checkIfPalindrome(string: String): Boolean = {
+      (0 to string.length / 2).toList.map(el => string.charAt(el)).equals((0 to string.length / 2).toList.map(el => string.charAt(string.length - 1 - el)))
+    }
+
+    def getIfPalindrome(string: String): Option[String] = {
+      Some(string).filter(checkIfPalindrome)
+    }
+
+    def findPalindromesOfLength(length: Int, wordsToEncodings: Map[String, String]) = {
+      val listOfStrings = new ListBuffer[String]
+      wordsToEncodings.filter(thing => thing._1.length == length).filter(el => checkIfPalindrome(el._2)).foreach(el => listOfStrings += el._1)
+      listOfStrings
+    }
+
+
+    println(getWordsWithGivenEncoding(getEncodingWithMaxCounts(findMaxCountOfEncodingsInMap(makeMapOfEncodingsToCountsFromFile()), makeMapOfEncodingsToCountsFromFile()), makeMapOfWordToEncodingFromFile()))
+    println(getWordsWithNHyphens(15, makeMapOfWordToEncodingFromFile()))
+    println(morseEncoder("daily"))
+    println(getPerfectlyBalanced(21, makeMapOfWordToEncodingFromFile()))
+
+    //  println(checkIfPalindrome("kayak"))
+    println(findPalindromesOfLength(13, makeMapOfWordToEncodingFromFile()))
 
   def addInputToAlreadyChecked(input: String, checked: mutable.HashSet[String]): mutable.HashSet[String] = {
     checked.add(input)
@@ -209,7 +209,7 @@ object Main extends App {
 
 
       })
-      println("The returner string now is " + returnerString)
+//      println("The returner string now is " + returnerString)
       if (returnerString.nonEmpty) Option(returnerString.toString()) else None
     }
   }
