@@ -21,6 +21,9 @@ object Main extends App {
     ('/', "-..-.  "), ('-', "..--.- "), (')', "---..  "), ('=', "-...-  "),
     ('@', ".--.-. "), ('"', ".-..-. "), ('+', ".-.-.  "), (' ', "/"))
   private val alphabet = code.filter(el => el._1.isLetter)
+  private val alphabetTest = Map(
+    ('A', "."), ('B', "-"), ('C', ".-")
+  )
 
   //(".--...-.-.-.....-.--........----.-.-..---.---.--.--.-.-....-..-...-.---..--.----..")
   /*
@@ -173,40 +176,42 @@ object Main extends App {
 
    */
   def lookForDecoding(input: String, immutAlphabet: Map[Char, String], checked: mutable.HashSet[String]): Option[String] = {
-    val alphabet = collection.mutable.HashMap(immutAlphabet.toSeq: _*)
 
     var returnerString = new mutable.StringBuilder()
     if (isSolved(input)) {
-      returnerString ++= ""
+      Some(returnerString.toString())
     }
     else {
       (1 to 4).toList.filter(el => el <= input.length).foreach(el => {
-        println(el)
+//        println(el)
         val letter = getLetterFromMorse(input.substring(0, el), immutAlphabet)
-        println(input.substring(0, el))
-        println(letter)
+//        println(input.substring(0, el))
+//        println(letter)
         if (!checkIfInputAlreadyChecked(letter.toString, checked) && letter != ' ') {
           checked += letter.toString
           //          println(letter)
           val next = lookForDecoding(input.substring(el), immutAlphabet, checked)
           if (next.isDefined) {
-            println("Letter to string: " + letter.toString)
+//            println("Letter to string: " + letter.toString)
             returnerString ++= letter.toString
-            println("Next returner string: " + next.get)
+//            println("Next returner string: " + next.get)
             returnerString ++= next.get
-            println("Now returner string: " + returnerString)
+//            println("Now returner string: " + returnerString)
 
-            //            println(returnerString)
-            //            println("If not empty!")
+//            println(returnerString)
+//            println("If not empty!")
           }
-          if (returnerString.isEmpty) checked.remove(letter.toString)
+          if (next.isEmpty ) {
+            checked.remove(letter.toString)
+//            println("Now checked: " + checked + ", after removing " + letter.toString)
+          }
         }
 
 
       })
+      println("The returner string now is " + returnerString)
+      if (returnerString.nonEmpty) Option(returnerString.toString()) else None
     }
-    println("The returner string now is " + returnerString)
-    Option(returnerString.toString())
   }
 
   def isSolved(input: String): Boolean = {
@@ -221,12 +226,18 @@ object Main extends App {
     lookForDecoding(input, immutAlphabet, new mutable.HashSet[String])
   }
 
-  println("abc".substring(1, 2))
+  //  println("abc".substring(1, 2))
   //  (1 to 4).filter(el => el<1).foreach(el => println("Whoops!"))
+  //  val testStrB = new mutable.StringBuilder()
+  //  testStrB ++= ""
+  //  println(testStrB.isEmpty)
+  //  println(Option(""))
 
   println(runDecoding(".--...-.-.-.....-.--........----.-.-..---.---.--.--.-.-....-..-...-.---..--.----..", alphabet))
+//  println(runDecoding(".--...-.-.-.....-.--........----.-.-..---.---.--.--.-.-....-..-...-.---..--.----..", alphabetT))
+  //  println(runDecoding("..--", alphabetTest))
   //  println(runDecoding(".--...-.-.-.....-.--.....--...-.----.--...-..-.....--.-.-..-...", alphabet))
-//  println(runDecoding(".--...-.-.-.....-.--.....--...-.----.--...-..-.....--.-.-..-...-..---.-----.--", alphabet))
+  //  println(runDecoding(".--...-.-.-.....-.--.....--...-.----.--...-..-.....--.-.-..-...-..---.-----.--", alphabet))
   //  println(runDecoding(".--...-.-.-.....-.--.....--...-.----.--...-..-.....--.-.-..-...-..---.-----.--", alphabet))
 
 }
