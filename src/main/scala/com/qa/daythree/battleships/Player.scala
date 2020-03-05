@@ -33,13 +33,15 @@ class Player(val grid: Grid) {
         grid.checkIfShipsSunk()
         grid.printGrid(false)
         hit = !grid.checkIfLost()
+      } else {
+        println("You missed!")
+
+        grid.printGrid(false)
+
       }
 
     }
 
-    println("You missed!")
-
-    grid.printGrid(false)
 
 
   }

@@ -133,10 +133,17 @@ class Grid(val length: Int) {
     var endX = -1
     var endY = -1
     direction match {
-      case 'u' => endY = endY + ship.length
-      case 'r' => endX = endX + ship.length
-      case 'd' => endY = endY - ship.length
-      case 'l' => endX = endX - ship.length
+        //ship length 2
+        //start x, y: 5, 5
+        //up: 5, 6
+        //down: 5, 4
+        //right: 6, 5
+        //left: 4, 5
+      case 'u' => endY = indexY + (ship.length - 1)
+      case 'r' => endX = indexX + (ship.length - 1)
+      case 'd' => endY = indexY - (ship.length - 1)
+      case 'l' => endX = indexX - (ship.length - 1)
+      case _ => println("This is not good! No direction passed to addShipToDictionary.")
     }
 
     if (endX == -1) endX = indexX
@@ -146,10 +153,13 @@ class Grid(val length: Int) {
   }
 
   def checkIfShipsSunk(): Unit = {
+    println("Checking for sunk.")
     shipsOnBoard.foreach {
-      case (ship: Ship, xSt: Int, ySt: Int, xEn: Int, yEn: Int) => {
+      case (ship: Ship, xSt: Int, ySt: Int, xEn: Int, yEn: Int) =>
         var wasSunk = true
+        println(s"For ship of length ${ship.length}, the xSt is ${xSt}, the xEn is ${xEn}, the ySt is ${ySt} and the yEn is ${yEn}")
         if (xSt == xEn) {
+          println("Same x!")
           (ySt to yEn).toList.foreach(yCurrent => {
             println(yCurrent)
             if (grid(yCurrent)(xSt) == "X") wasSunk = false
@@ -159,14 +169,14 @@ class Grid(val length: Int) {
           }
         }
         else {
-          (xSt to xEn).toList.foreach(xCurrent => if (grid(xCurrent)(ySt) == "X") wasSunk = false)
+          println("Same y!")
+          (xSt to xEn).toList.foreach(xCurrent => if (grid(ySt)(xCurrent) == "X") wasSunk = false)
           if (wasSunk) {
-            (xSt to xEn).toList.foreach(xCurrent => grid(xCurrent)(ySt) = "S")
+            (xSt to xEn).toList.foreach(xCurrent => grid(ySt)(xCurrent) = "S")
 
           }
 
         }
-      }
 
     }
   }
