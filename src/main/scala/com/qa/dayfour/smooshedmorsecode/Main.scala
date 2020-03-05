@@ -12,7 +12,7 @@ object Main extends App {
     ('I', "..     "), ('J', ".---   "), ('K', "-.-    "), ('L', ".-..   "),
     ('M', "--     "), ('N', "-.     "), ('O', "---    "), ('P', ".--.   "),
     ('Q', "--.-   "), ('R', ".-.    "), ('S', "...    "), ('T', "-      "),
-    ('U', "..-    "), ('V', "...-   "), ('W', ".-   - "), ('X', "-..-   "),
+    ('U', "..-    "), ('V', "...-   "), ('W', ".--    "), ('X', "-..-   "),
     ('Y', "-.--   "), ('Z', "--..   "), ('0', "-----  "), ('1', ".----  "),
     ('2', "..---  "), ('3', "...--  "), ('4', "....-  "), ('5', ".....  "),
     ('6', "-....  "), ('7', "--...  "), ('8', "---..  "), ('9', "----.  "),
@@ -20,6 +20,7 @@ object Main extends App {
     ('(', "-.--.- "), ('.', ".-.-.- "), ('?', "..--.. "), (';', "-.-.-. "),
     ('/', "-..-.  "), ('-', "..--.- "), (')', "---..  "), ('=', "-...-  "),
     ('@', ".--.-. "), ('"', ".-..-. "), ('+', ".-.-.  "), (' ', "/"))
+  private val alphabet = code.filter(_._1.isLetter)
 
   def morseEncoder(input: String): String = {
     concatStrings(input).toString()
@@ -77,11 +78,44 @@ object Main extends App {
     listOfStrings
   }
 
+  def getWordsWithNHyphens(amount: Int, wordsToEncodings: Map[String, String]) = {
+    val listOfStrings = new ListBuffer[String]
+    wordsToEncodings.filter(_._2.matches(s".*-{$amount}.*")).foreach(el => listOfStrings += el._1)
+    listOfStrings
+  }
 
+  def countCharInString(string: String, char: Char): Int = {
+    string.toCharArray.count(el => el==char)
+  }
+
+
+  def getPerfectlyBalanced(wordLength: Int, wordsToEncodings: Map[String, String]) = {
+    val listOfStrings = new ListBuffer[String]
+    wordsToEncodings.filter(_._1.length == wordLength).filter(elem => countCharInString(elem._2, '-') == countCharInString(elem._2, '.')).foreach(el => listOfStrings += el._1)
+    listOfStrings
+  }
+
+  def checkIfPalindrome(string: String): Boolean = {
+    (0 to string.length/2).toList.map(el => string.charAt(el)).equals((0 to string.length/2).toList.map(el => string.charAt(string.length-1-el)))
+  }
+
+  def getIfPalindrome(string: String): Option[String] = {
+    Some(string).filter(checkIfPalindrome)
+  }
+
+  def findPalindromesOfLength(length: Int, wordsToEncodings: Map[String, String])= {
+    val listOfStrings = new ListBuffer[String]
+    wordsToEncodings.filter(_._1.length == length).filter(el => checkIfPalindrome(el._2)).foreach(el => listOfStrings += el._1)
+    listOfStrings
+  }
 
 
   println(getWordsWithGivenEncoding(getEncodingWithMaxCounts(findMaxCountOfEncodingsInMap(makeMapOfEncodingsToCountsFromFile()), makeMapOfEncodingsToCountsFromFile()), makeMapOfWordToEncodingFromFile()))
-
+  println(getWordsWithNHyphens(15, makeMapOfWordToEncodingFromFile()))
   println(morseEncoder("daily"))
+  println(getPerfectlyBalanced(21,makeMapOfWordToEncodingFromFile()))
+
+//  println(checkIfPalindrome("kayak"))
+  println(findPalindromesOfLength(13, makeMapOfWordToEncodingFromFile()))
 
 }
