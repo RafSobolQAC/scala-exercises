@@ -69,11 +69,13 @@ object Main {
   def weightedAiChooses(): String = {
 
     playerChoicesSoFar.foreach(el => eachThingChosenByPlayer(el) = playerChoicesSoFar.count(choice => choice == el))
-    val weightedOptions = new scala.collection.mutable.ListBuffer[String]
-    eachThingChosenByPlayer.foreach(choiceCounts => (1 to choiceCounts._2).toList.foreach(iteration => weightedOptions += choiceCounts._1))
+    var weightedChoices = new scala.collection.mutable.ListBuffer[String]
+    eachThingChosenByPlayer.foreach(choiceCounts => (1 to choiceCounts._2).toList.foreach(iteration => weightedChoices += choiceCounts._1))
     //now weightedOptions will be List("rock","rock","rock","rock",...)
-    weightedOptions.map(el => choices.values.toList.find)
-
+    val weightedOptions = new scala.collection.mutable.ListBuffer[String]
+    weightedChoices.foreach(el => choices.foreach(winnerWinAgainst => if (winnerWinAgainst._2.contains(el)) weightedOptions += winnerWinAgainst._1))
+    println(weightedOptions)
+    weightedOptions.toList(Random.nextInt(weightedOptions.size))
   }
 
 
@@ -114,7 +116,7 @@ object Main {
   }
 
   def main(args: Array[String]): Unit = {
-    game(getInput, aiChooses)
+    game(getInput, weightedAiChooses)
   }
 
 }
