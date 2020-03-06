@@ -1,5 +1,6 @@
 package com.qa.dayfive.rockpapersls
 
+import scala.collection.mutable.ListBuffer
 import scala.io.StdIn._
 import scala.util.Random
 
@@ -54,8 +55,37 @@ object Main {
   def aiChooses(): String = {
     val aiChoice = choices.keys.toList(Random.nextInt(choices.size))
     println(s"Player 2 picked $aiChoice!")
+    //    playerChoicesSoFar += aiChoice
     aiChoice
   }
+
+  def chooseRandomWeighted(weightedList: Option[List[String]]): Option[String] = {
+    if (weightedList.isDefined)
+      Some(weightedList.get(Random.nextInt(weightedList.get.length)))
+    else
+      None
+  }
+
+  def getWeightedList(options: List[String], weights: List[Int]): Option[List[String]] = {
+    if (options.length != weights.length || options.isEmpty) None
+    else {
+      val listTemp = new ListBuffer[String]
+      weights.indices.foreach(index => (1 to weights(index)).toList.foreach(choice => listTemp.addOne(options(index))))
+      Some(listTemp.toList)
+    }
+  }
+
+//  def chooseMostCommon(weightedList: Option[List[String]]): Option[String] = {
+//    if (weightedList.isDefined)
+//      Some(weightedList.get.groupBy(identity).view.mapValues(_.size).map(identity).maxBy(_._2)._2)
+//    else
+//      None
+//  }
+
+  def aiRandom(): String = {
+    choices.keys.toList(Random.nextInt(choices.size))
+  }
+
 
   /*
       playerChoicesSoFar: rock, rock, rock, rock, rock, rock, rock, rock
@@ -65,23 +95,55 @@ object Main {
              ("rock" -> 8)
            )
    */
+  /*
+    now, instead of making the computer pick the most likely out of last 10 (really 5)
+    make it so that it looks at the last 3 picked by player
+    i.e. for 3 turns, pick random
+    (rock -> paper, rock -> scissors, rock -> paper)
+    then from last 3 see what was the most common, make it rock
+    then next turn look at last 3, you have (rock -> scissors, rock -> paper, rock -> paper)
+    now again paper
+    (rock -> paper, rock -> paper, scissors -> rock)
+    now changed 67% paper, 33% rock
+    (rock -> paper, scissors -> rock, scissors -> paper)
+    now changed 33% paper, 67% rock
 
+    taking the last 5 3-round averages, you also have 3xpaper+3xpaper+2xpaper+1xrock+1xpaper+2xrock, so 9 paper 3 rock
+    so 75% paper, 25% rock
+      and from last, 33% paper, 67% rock
+      pick largest of them, that's paper
+
+
+
+
+   */
   def weightedAiChooses(): String = {
 
     playerChoicesSoFar.foreach(el => eachThingChosenByPlayer(el) = playerChoicesSoFar.count(choice => choice == el))
     var weightedChoices = new scala.collection.mutable.ListBuffer[String]
     eachThingChosenByPlayer.foreach(choiceCounts => (1 to choiceCounts._2).toList.foreach(_ => weightedChoices += choiceCounts._1))
     //now weightedOptions will be List("rock","rock","rock","rock",...)
-    weightedChoices = weightedChoices.drop(weightedChoices.size-9)
+    weightedChoices = weightedChoices.drop(weightedChoices.size - 9)
     var weightedOptions = new scala.collection.mutable.ListBuffer[String]
     weightedChoices.foreach(el => choices.foreach(winnerWinAgainst => if (winnerWinAgainst._2.contains(el)) weightedOptions += winnerWinAgainst._1))
-    weightedOptions = weightedOptions.drop(weightedOptions.size-9)
+    weightedOptions = weightedOptions.drop(weightedOptions.size - 9)
     println(weightedOptions)
     val returner = weightedOptions.toList(Random.nextInt(weightedOptions.size))
     println(s"Player 2 picked $returner!")
     returner
   }
 
+  def weightedAiPlayerChooses(): String = {
+    val returner = if (playerChoicesSoFar.isEmpty) aiChooses()
+    else weightedAiChooses()
+    playerChoicesSoFar += returner
+    returner
+  }
+
+  def alwaysReturnPaper(): String = {
+    playerChoicesSoFar += "paper"
+    "paper"
+  }
 
   /*
     list: 0,1,2
@@ -113,6 +175,7 @@ object Main {
     }
   }
 
+
   def askIfStop(): Boolean = {
     println("Play again?")
     readLine.charAt(0) match {
@@ -131,7 +194,8 @@ object Main {
   }
 
   def main(args: Array[String]): Unit = {
-    game(getInput, weightedAiChooses)
+    //    game(getInput, weightedAiChooses)
+    chooseRandomWeighted(List("R", "S", "P"), List(4, 2, 1))
   }
 
 }
