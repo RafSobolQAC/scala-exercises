@@ -53,7 +53,7 @@ object Main extends App {
   }
 
     def readFile(): List[String] = {
-      val fileSource = Source.fromFile("/home/qa-admin/enable1.txt")
+      val fileSource = Source.fromFile(getClass.getResource("/enable1.txt").getPath)
       val fileRead = fileSource.getLines
       //    fileSource.close()
       fileRead.toList
