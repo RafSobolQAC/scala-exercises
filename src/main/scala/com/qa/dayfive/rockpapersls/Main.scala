@@ -18,7 +18,7 @@ object Main {
   //lizard: 3 > 1,4 < 0,2
   //paper: 4 > 0,1 < 2,3
 
-  val eachThingChosenByPlayer = new scala.collection.mutable.HashMap[String,Int]
+  val eachThingChosenByPlayer = new scala.collection.mutable.HashMap[String, Int]
   choices.keys.foreach(el => eachThingChosenByPlayer(el) = 0)
 
   def checkIfWon(choice1: String, choice2: String): Int = {
@@ -70,12 +70,16 @@ object Main {
 
     playerChoicesSoFar.foreach(el => eachThingChosenByPlayer(el) = playerChoicesSoFar.count(choice => choice == el))
     var weightedChoices = new scala.collection.mutable.ListBuffer[String]
-    eachThingChosenByPlayer.foreach(choiceCounts => (1 to choiceCounts._2).toList.foreach(iteration => weightedChoices += choiceCounts._1))
+    eachThingChosenByPlayer.foreach(choiceCounts => (1 to choiceCounts._2).toList.foreach(_ => weightedChoices += choiceCounts._1))
     //now weightedOptions will be List("rock","rock","rock","rock",...)
-    val weightedOptions = new scala.collection.mutable.ListBuffer[String]
+    weightedChoices = weightedChoices.drop(weightedChoices.size-9)
+    var weightedOptions = new scala.collection.mutable.ListBuffer[String]
     weightedChoices.foreach(el => choices.foreach(winnerWinAgainst => if (winnerWinAgainst._2.contains(el)) weightedOptions += winnerWinAgainst._1))
+    weightedOptions = weightedOptions.drop(weightedOptions.size-9)
     println(weightedOptions)
-    weightedOptions.toList(Random.nextInt(weightedOptions.size))
+    val returner = weightedOptions.toList(Random.nextInt(weightedOptions.size))
+    println(s"Player 2 picked $returner!")
+    returner
   }
 
 
@@ -93,11 +97,18 @@ object Main {
 
 
   @scala.annotation.tailrec
-  def playAgain(stopPlaying: () => Boolean, player1Choice: () => String, player2Choice: () => String): Int = {
-    playUntilWon(player1Choice,player2Choice)
+  def playAgain(stopPlaying: () => Boolean, player1Choice: () => String, player2Choice: () => String, wins1: Int, wins2: Int): Int = {
+    var wins1Game = wins1
+    var wins2Game = wins2
+    playUntilWon(player1Choice, player2Choice) match {
+      case 1 => wins1Game += 1
+      case 2 => wins2Game += 1
+      case _ =>
+    }
+    println(s"Scores: player 1: $wins1Game wins, player 2: $wins2Game wins")
     stopPlaying() match {
       case false =>
-        playAgain(stopPlaying, player1Choice, player2Choice)
+        playAgain(stopPlaying, player1Choice, player2Choice, wins1Game, wins2Game)
       case _ => 0
     }
   }
@@ -111,8 +122,12 @@ object Main {
     }
   }
 
+  def retFalse(): Boolean = false
+
   def game(player1Choice: () => String, player2Choice: () => String): Unit = {
-    playAgain(askIfStop, player1Choice, player2Choice)
+    var wins1 = 0
+    var wins2 = 0
+    playAgain(retFalse, player1Choice, player2Choice, 0, 0)
   }
 
   def main(args: Array[String]): Unit = {
