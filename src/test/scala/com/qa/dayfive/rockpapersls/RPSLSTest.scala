@@ -175,6 +175,13 @@ class RPSLSTest extends UnitSpec with BeforeAndAfter{
     doReturn(ListBuffer[String]("spock")).when(spiedGame).getWeightedOptions(any())
     assert(spiedGame.weightedAiChooses() == "spock")
   }
+
+  "The respond-to-constant-same function" should "return an option that beats the input every time" in {
+    doReturn("rock").when(spiedGame).getWinningResponse(anyString())
+
+    assert(spiedGame.respondToConstantSameInput(ListBuffer("scissors","scissors")) == "rock")
+  }
+
 //  it should "use weightedAIchooses otherwise" in {
 
 //  }

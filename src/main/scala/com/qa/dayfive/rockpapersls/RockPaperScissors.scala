@@ -80,8 +80,22 @@ class RockPaperScissors {
       None
   }
 
+  def getWinningResponse(toWinAgainst: String): String = {
+    choices.filter(elem => elem._2.contains(toWinAgainst)).keys.toList.head
+  }
 
+  def respondToConstantSameInput(playerHistory: ListBuffer[String]): String = {
+    getWinningResponse(chooseMostCommon(Some(getWeightedChoices(playerHistory).toList)).get)
+  }
 
+  def respondToRegularSameInput(playerHistory: ListBuffer[String]): String = {
+    getWinningResponse(chooseRandomWeighted(Some(getWeightedChoices(playerHistory).toList)).get)
+  }
+
+  def respondToRegularInputAfterInput(playerHistory: ListBuffer[String]): String = {
+    val mostRecent = playerHistory.head
+
+  }
 
   /*
       playerChoicesSoFar: rock, rock, rock, rock, rock, rock, rock, rock
@@ -195,6 +209,7 @@ class RockPaperScissors {
     var wins1 = 0
     var wins2 = 0
     playAgain(() => false, player1Choice, player2Choice, 0, 0)
+
   }
 
 }
