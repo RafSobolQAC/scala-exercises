@@ -47,6 +47,7 @@ class RockPaperScissors {
     case _ => println(s"Player 2 wins!")
       2
   }
+
   def getRandomInt(max: Int): Int = {
     Random.nextInt(max)
   }
@@ -125,16 +126,18 @@ class RockPaperScissors {
    */
 
   def playLearningAi() = {
-    var weights = ListBuffer(1,1)
+    var weights = ListBuffer(1, 1)
     var ourMovesHistory = new ListBuffer[String]()
     var totalScore = 0
     var winLossHistory = new ListBuffer[Int]()
     playerChoicesSoFar += aiChooses()
     (0 to 100).foreach(el => {
+      println(s"Start of a new turn!")
+      println(s"The current weights are $weights")
 
-      var possibleMoves = List(respondToRegularSameInput(playerChoicesSoFar),respondToConstantSameInput(playerChoicesSoFar))
+      val possibleMoves = List(respondToRegularSameInput(playerChoicesSoFar), respondToConstantSameInput(playerChoicesSoFar))
       println(s"player choices so far: $playerChoicesSoFar")
-      var i = chooseRandomWeighted(getWeightedList(List("0","1"),weights.toList))
+      val i = chooseRandomWeighted(getWeightedList(List("0", "1"), weights.toList))
       var movePicked = possibleMoves(i.get.toInt)
 
       val opponentMove = getInput()
@@ -145,17 +148,16 @@ class RockPaperScissors {
         case _ => 0
       }
       println(s"AI move: $movePicked, your move: $opponentMove")
-      println(s"The strategy picked was ${if (i==0) "constant" else "ordered"}")
+      println(s"The strategy picked was ${if (i == 0) "constant" else "ordered"}")
       totalScore += score
       winLossHistory += score
       println(s"Total score now is $totalScore")
       ourMovesHistory += movePicked
-//      playerChoicesSoFar += opponentMove
       if (playerChoicesSoFar.length > 15) playerChoicesSoFar = playerChoicesSoFar.drop(10)
       if (winLossHistory.length > 7) {
-        if (!winLossHistory.slice(winLossHistory.length-6,winLossHistory.length).contains(1)) {
+        if (!winLossHistory.slice(winLossHistory.length - 6, winLossHistory.length).contains(1)) {
           println()
-          weights = ListBuffer(1,1)
+          weights = ListBuffer(1, 1)
           playerChoicesSoFar.empty
           println("Resetting strategies!")
         }
@@ -185,7 +187,7 @@ class RockPaperScissors {
     eachThingChosenByPlayer
   }
 
-  def getWeightedChoices(playerChoicesSoFar: ListBuffer[String] ): ListBuffer[String] = {
+  def getWeightedChoices(playerChoicesSoFar: ListBuffer[String]): ListBuffer[String] = {
     playerChoicesSoFar.foreach(el => eachThingChosenByPlayer(el) = playerChoicesSoFar.count(choice => choice == el))
     var weightedChoices = new scala.collection.mutable.ListBuffer[String]
     eachThingChosenByPlayer.foreach(choiceCounts => (1 to choiceCounts._2).toList.foreach(_ => weightedChoices += choiceCounts._1))
