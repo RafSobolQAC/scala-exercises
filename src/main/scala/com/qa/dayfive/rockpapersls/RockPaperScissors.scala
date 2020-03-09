@@ -170,8 +170,7 @@ class RockPaperScissors {
     var wins2Game = wins2
     playUntilWon(player1Choice, player2Choice) match {
       case 1 => wins1Game += 1
-      case 2 => wins2Game += 1
-      case _ =>
+      case _ => wins2Game += 1
     }
     println(s"Scores: player 1: $wins1Game wins, player 2: $wins2Game wins")
     stopPlaying() match {
@@ -191,12 +190,11 @@ class RockPaperScissors {
     }
   }
 
-  def retFalse(): Boolean = false
 
   def game(player1Choice: () => String, player2Choice: () => String): Unit = {
     var wins1 = 0
     var wins2 = 0
-    playAgain(retFalse, player1Choice, player2Choice, 0, 0)
+    playAgain(() => false, player1Choice, player2Choice, 0, 0)
   }
 
 }
