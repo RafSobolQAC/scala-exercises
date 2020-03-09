@@ -1,0 +1,131 @@
+package com.qa.dayfive.rockpapersls
+
+import java.io.{ByteArrayInputStream, StringReader}
+
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
+import org.mockito.{InjectMocks, MockitoAnnotations, Spy}
+
+import scala.collection.mutable.ListBuffer
+import scala.util.Random
+class RPSLSTest extends UnitSpec {
+
+  @Spy
+  @InjectMocks
+  val spiedGame = new RockPaperScissors
+
+  val game = new RockPaperScissors
+
+  "Rock" should "win against scissors" in {
+    assert(game.checkIfWon("rock","scissors") == 1)
+  }
+  it should "lose against spock" in {
+    assert(game.checkIfWon("rock","spock") == -1)
+  }
+  "A string that isn't in the game" should "throw a null pointer error" in {
+    assertThrows[NullPointerException] {
+      game.checkIfWon("a","b")
+    }
+  }
+  "Any valid choice" should "draw with itself" in {
+    assert(game.checkIfWon("scissors","scissors") == 0)
+  }
+
+  "Inputting a valid game choice" should "return that game choice" in {
+    val in = new ByteArrayInputStream("rock".getBytes)
+    Console.withIn(in) {
+      assert(game.getInput() == "rock")
+    }
+  }
+
+  "Inputting an invalid game choice" should "ask to reinput it" in {
+    val inputStr =
+      """
+        |notAValidOption
+        |rock
+        """.stripMargin
+    val in = new StringReader(inputStr)
+    Console.withIn(in) {
+      assert(game.getInput() == "rock")
+    }
+  }
+
+  "A 1 input into playUntilWon" should "result in Player 1's victory" in {
+    val inputVictory = spy(game)
+    when(inputVictory.checkIfWon("rock","scissors")).thenReturn(1)
+    def giveRock() = "rock"
+    def giveScissors() = "scissors"
+    assert(inputVictory.playUntilWon(giveRock, giveScissors) == 1)
+  }
+
+  "A 2 input into playUntilWon" should "result in Player 2's victory" in {
+    val inputLoss = spy(game)
+    when(inputLoss.checkIfWon("rock","paper")).thenReturn(-1)
+    def giveRock() = "rock"
+    def givePaper() = "paper"
+    assert(inputLoss.playUntilWon(giveRock, givePaper) == 2)
+  }
+
+  "A 0 input into playUntilWon" should "result in another game" in {
+    val inputDraw = spy(game)
+    doReturn(0).doReturn(1).when(inputDraw).checkIfWon(anyString(), anyString())
+    assert(inputDraw.playUntilWon(() => "a", () => "a") == 1)
+  }
+
+  "An AI picking a random number" should "return the number" in {
+    MockitoAnnotations.initMocks(this)
+    doReturn(2).when(spiedGame).getRandomInt(anyInt())
+    assert(spiedGame.aiChooses() == "lizard")
+  }
+
+  "The random number generator" should "return an int less than max" in {
+    (1 to 10).toList.foreach(el => {
+      val randomNumber = game.getRandomInt(10)
+      assert(randomNumber >= 0 && randomNumber <= 10)
+    }
+    )
+  }
+
+  "The choose random from weighted list" should "return None if passed None" in {
+    assert(game.chooseMostCommon(None) == None)
+  }
+  it should "return a random number if passed a weighted list" in {
+    val listToCheck = Some(List("a","b","c","d","e"))
+    assert(listToCheck.get.contains(game.chooseRandomWeighted(listToCheck).get))
+  }
+
+  "The get weighted list function" should "return None if passed an empty list" in {
+    assert(game.getWeightedList(List(), List()).isEmpty)
+  }
+  it should "return None if passed two lists of uneven sizes" in {
+    assert(game.getWeightedList(List("a","b"),List(3)).isEmpty)
+  }
+  it should "return a weighted list if passed valid input" in {
+    val unweightedList = List("a","b","c")
+    val weights = List(2,1,0)
+    assert(game.getWeightedList(unweightedList,weights).get == List("a","a","b"))
+  }
+
+  "The choose-most-common function" should "return the most common item from a list" in {
+    assert(game.chooseMostCommon(Some(List("a", "a", "a", "b", "b"))).contains("a"))
+  }
+
+  "The set-up of each thing chosen by the player" should "return a map of (Option, 0)" in {
+    assert(spiedGame.setUpEachThingChosenByPlayer().values.toList == List(0,0,0,0,0))
+    assert(spiedGame.setUpEachThingChosenByPlayer().keys.toList == List("scissors", "rock", "spock", "paper", "lizard"))
+  }
+
+  "The weighted-AI-player-chooses function" should "return a random entry if playerChoicesSoFar is empty" in {
+    assert(List("rock","spock","paper","lizard","scissors").contains(spiedGame.weightedAiPlayerChooses(ListBuffer())))
+  }
+  it should "return an entry from weightedAiChooses otherwise" in {
+    val mockGame = mock(classOf[RockPaperScissors])
+    mockGame.weightedAiPlayerChooses(ListBuffer("a","b"))
+    verify(mockGame).weightedAiChooses()
+  }
+
+
+//  it should "use weightedAIchooses otherwise" in {
+
+//  }
+}
