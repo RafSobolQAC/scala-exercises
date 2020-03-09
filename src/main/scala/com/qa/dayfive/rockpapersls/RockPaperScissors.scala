@@ -9,10 +9,10 @@ class RockPaperScissors {
     "rock" -> Set("scissors", "lizard"),
     "spock" -> Set("rock", "scissors"),
     "scissors" -> Set("lizard", "paper"),
-    "lizard" -> Set("spock", "paper"),
-    "paper" -> Set("rock", "spock")
+    "lizard" -> Set("paper", "spock"),
+    "paper" -> Set("spock", "rock")
   )
-  val playerChoicesSoFar = new scala.collection.mutable.ListBuffer[String]
+  var playerChoicesSoFar = new scala.collection.mutable.ListBuffer[String]
   //rock: 0 > 2,3 < 1,4
   //spock: 1 > 0,2 < 1,4
   //scissors: 2 > 3,4 < 0,1
@@ -92,10 +92,6 @@ class RockPaperScissors {
     getWinningResponse(chooseRandomWeighted(Some(getWeightedChoices(playerHistory).toList)).get)
   }
 
-  def respondToRegularInputAfterInput(playerHistory: ListBuffer[String]): String = {
-    val mostRecent = playerHistory.head
-
-  }
 
   /*
       playerChoicesSoFar: rock, rock, rock, rock, rock, rock, rock, rock
@@ -128,6 +124,52 @@ class RockPaperScissors {
 
    */
 
+  def playLearningAi() = {
+    var weights = ListBuffer(1,1)
+    var ourMovesHistory = new ListBuffer[String]()
+    var totalScore = 0
+    var winLossHistory = new ListBuffer[Int]()
+    playerChoicesSoFar += aiChooses()
+    (0 to 100).foreach(el => {
+
+      var possibleMoves = List(respondToRegularSameInput(playerChoicesSoFar),respondToConstantSameInput(playerChoicesSoFar))
+      println(s"player choices so far: $playerChoicesSoFar")
+      var i = chooseRandomWeighted(getWeightedList(List("0","1"),weights.toList))
+      var movePicked = possibleMoves(i.get.toInt)
+
+      val opponentMove = getInput()
+
+      val score = checkIfWon(movePicked, opponentMove) match {
+        case 1 => 1
+        case -1 => -1
+        case _ => 0
+      }
+      println(s"AI move: $movePicked, your move: $opponentMove")
+      println(s"The strategy picked was ${if (i==0) "constant" else "ordered"}")
+      totalScore += score
+      winLossHistory += score
+      println(s"Total score now is $totalScore")
+      ourMovesHistory += movePicked
+//      playerChoicesSoFar += opponentMove
+      if (playerChoicesSoFar.length > 15) playerChoicesSoFar = playerChoicesSoFar.drop(10)
+      if (winLossHistory.length > 7) {
+        if (!winLossHistory.slice(winLossHistory.length-6,winLossHistory.length).contains(1)) {
+          println()
+          weights = ListBuffer(1,1)
+          playerChoicesSoFar.empty
+          println("Resetting strategies!")
+        }
+      }
+      for (move <- possibleMoves.indices) {
+        if (checkIfWon(possibleMoves(move), opponentMove) == 1)
+          weights(move) += 1
+      }
+
+
+    })
+
+
+  }
 
   def getWeightedOptions(weightedChoices: ListBuffer[String]): ListBuffer[String] = {
     var weightedOptions = new ListBuffer[String]
