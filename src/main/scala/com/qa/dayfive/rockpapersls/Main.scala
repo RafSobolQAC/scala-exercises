@@ -1,5 +1,6 @@
 package com.qa.dayfive.rockpapersls
 
+
 import scala.collection.mutable.ListBuffer
 import scala.io.StdIn._
 import scala.util.Random
@@ -75,12 +76,12 @@ object Main {
     }
   }
 
-//  def chooseMostCommon(weightedList: Option[List[String]]): Option[String] = {
-//    if (weightedList.isDefined)
-//      Some(weightedList.get.groupBy(identity).view.mapValues(_.size).map(identity).maxBy(_._2)._2)
-//    else
-//      None
-//  }
+  //  def chooseMostCommon(weightedList: Option[List[String]]): Option[String] = {
+  //    if (weightedList.isDefined)
+  //      Some(weightedList.get.groupBy(identity).view.mapValues(_.size).map(identity).maxBy(_._2)._2)
+  //    else
+  //      None
+  //  }
 
   def aiRandom(): String = {
     choices.keys.toList(Random.nextInt(choices.size))
@@ -194,8 +195,9 @@ object Main {
   }
 
   def main(args: Array[String]): Unit = {
-    //    game(getInput, weightedAiChooses)
-    chooseRandomWeighted(List("R", "S", "P"), List(4, 2, 1))
+    game(getInput, weightedAiChooses)
+    //    chooseRandomWeighted(List("R", "S", "P"), List(4, 2, 1))
+
   }
 
 }
